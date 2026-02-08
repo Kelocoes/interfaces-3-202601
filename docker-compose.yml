@@ -1,14 +1,22 @@
 services:
-    front:
-        build:
-            context: ./my-react-app
-            dockerfile: Dockerfile
-        container_name: react-frontend
+    backend:
+        build: .
+        container_name: backend-app
         ports:
-            - "3000:80"
+            - '8080:8080'
         depends_on:
             - db
-
+        environment:
+            PORT: 8080
+            DB_TYPE: postgres
+            DB_HOST: db
+            DB_PORT: 5432
+            DB_USERNAME: postgres
+            DB_PASSWORD: postgres
+            DB_DATABASE: mydatabase
+            DB_SYNCHRONIZE: true
+            JWT_SECRET: your_jwt_secret_key
+            JWT_EXPIRES_IN: 3600
     db:
         image: postgres:16
         container_name: postgres-db
@@ -17,7 +25,7 @@ services:
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: mydatabase
         ports:
-            - "5433:5432"
+            - '5433:5432'
         volumes:
             - postgres_data:/var/lib/postgresql/data
 
