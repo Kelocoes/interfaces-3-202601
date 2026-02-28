@@ -4,14 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CatModule } from './cats/cat.module';
 import { AuthModule } from './auth/auth.module';
 import { GamesModule } from './games/games.module';
 
 type SupportedDbTypes = 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mongodb' | 'oracle';
 @Module({
     imports: [
-        CatModule,
         AuthModule,
         ConfigModule.forRoot({ isGlobal: true }), // Load .env file and make it available globally
         TypeOrmModule.forRootAsync({
