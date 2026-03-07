@@ -36,35 +36,27 @@ export class UserService {
     findOne(id: number) {
         return this.userRepository.findOne({ where: { id } });
     }
-    // /**
-    //  * Find one user with their role
-    //  */
-    // findOne(id: number) {
-    //     return this.userRepository.findOne({
-    //         where: { id },
-    //         relations: ['role'],
-    //     });
-    // }
 
-    // /**
-    //  * Find user with role and permissions
-    //  */
-    // async findOneWithPermissions(id: number) {
-    //     return await this.userRepository.findOne({
-    //         where: { id },
-    //         relations: ['role', 'role.permissions'],
-    //     });
-    // }
+    findOneRelations(id: number) {
+        return this.userRepository.findOne({
+            where: { id },
+            relations: ['role'],
+        });
+    }
 
-    // /**
-    //  * Find all users with their roles and permissions
-    //  */
-    // async findAllWithPermissions() {
-    //     return await this.userRepository.find({
-    //         relations: ['role', 'role.permissions'],
-    //         order: { createdAt: 'DESC' },
-    //     });
-    // }
+    async findOneWithPermissions(id: number) {
+        return await this.userRepository.findOne({
+            where: { id },
+            relations: ['role', 'role.permissions'],
+        });
+    }
+
+    async findAllWithPermissions() {
+        return await this.userRepository.find({
+            relations: ['role', 'role.permissions'],
+            order: { createdAt: 'DESC' },
+        });
+    }
 
     async update(id: number, updateUserDto: UpdateUserDto) {
         await this.userRepository.update(id, updateUserDto);

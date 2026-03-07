@@ -17,25 +17,63 @@ export class GameService {
         private readonly userService: UserService,
     ) {}
 
-    create(_createGameDto: CreateGameDto) {
-        return 'This action adds a new game';
+    async create(createGameDto: CreateGameDto): Promise<Game> {
+        const createdBy = await this.userService.findOne(createGameDto.createdBy);
+        if (!createdBy) {
+            throw new Error('User not found');
+        }
+
+        const newGame = this.gameRepository.create({
+            ...createGameDto,
+            category: createGameDto.category as Game['category'],
+            createdBy,
+        });
+
+        return await this.gameRepository.save(newGame);
     }
 
-    async findAll() {
+    async findAll(): Promise<Game[]> {
         return await this.gameRepository.find({
             relations: ['createdBy'],
         });
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} game`;
+    async findOne(id: number): Promise<Game | null> {
+        return await this.gameRepository.findOne({
+            where: { id },
+            relations: ['createdBy'],
+        });
     }
 
-    update(id: number, _updateGameDto: UpdateGameDto) {
-        return `This action updates a #${id} game`;
+    async update(id: number, updateGameDto: UpdateGameDto): Promise<Game | null> {
+        const game = await this.gameRepository.findOne({
+            where: { id },
+            relations: ['createdBy'],
+        });
+
+        if (!game) {
+            return null;
+        }
+
+        const { createdBy: createdById, ...gameData } = updateGameDto;
+        Object.assign(game, gameData);
+
+        if (createdById !== undefined) {
+            const createdBy = await this.userService.findOne(createdById);
+            if (!createdBy) {
+                throw new Error('User not found');
+            }
+            game.createdBy = createdBy;
+        }
+
+        return await this.gameRepository.save(game);
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} game`;
+    async remove(id: number): Promise<{ id: number } | null> {
+        const result = await this.gameRepository.delete(id);
+        if (result.affected) {
+            return { id };
+        }
+        return null;
     }
 }
