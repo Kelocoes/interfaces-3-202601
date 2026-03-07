@@ -29,11 +29,14 @@ export class UserService {
         return await this.userRepository.save(newUser);
     }
 
-    findAll() {
-        return this.userRepository.find();
+    findAll(username?: string) {
+        return this.userRepository.find({
+            where: username ? { username: username } : {},
+            order: { createdAt: 'DESC' },
+        });
     }
 
-    findOne(id: number) {
+    findById(id: number) {
         return this.userRepository.findOne({ where: { id } });
     }
 
@@ -60,7 +63,7 @@ export class UserService {
 
     async update(id: number, updateUserDto: UpdateUserDto) {
         await this.userRepository.update(id, updateUserDto);
-        return this.findOne(id);
+        return this.findById(id);
     }
 
     async remove(id: number) {

@@ -18,7 +18,7 @@ export class GameService {
     ) {}
 
     async create(createGameDto: CreateGameDto): Promise<Game> {
-        const createdBy = await this.userService.findOne(createGameDto.createdBy);
+        const createdBy = await this.userService.findById(createGameDto.createdBy);
         if (!createdBy) {
             throw new Error('User not found');
         }
@@ -59,7 +59,7 @@ export class GameService {
         Object.assign(game, gameData);
 
         if (createdById !== undefined) {
-            const createdBy = await this.userService.findOne(createdById);
+            const createdBy = await this.userService.findById(createdById);
             if (!createdBy) {
                 throw new Error('User not found');
             }
