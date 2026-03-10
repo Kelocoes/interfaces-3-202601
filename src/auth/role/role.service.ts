@@ -4,6 +4,9 @@ import { Repository } from 'typeorm';
 
 import { Role } from '../entities/role.entity';
 
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
+
 @Injectable()
 export class RoleService {
     constructor(
@@ -13,5 +16,29 @@ export class RoleService {
 
     findByName(name: string) {
         return this.roleRepository.findOneBy({ name });
+    }
+    async create(createRoleDto: CreateRoleDto) {
+        const newRole = this.roleRepository.create({
+            ...createRoleDto,
+        });
+
+        return this.roleRepository.save(newRole);
+    }
+    async update(id: number, updateRoleDto: UpdateRoleDto) {
+        await this.roleRepository.update(id, updateRoleDto);
+        return this.roleRepository.findOneBy({ id });
+    }
+    async remove(id: number) {
+        const result = await this.roleRepository.delete(id);
+        if (result.affected) {
+            return { id };
+        }
+        return null;
+    }
+    findById(id: number) {
+        return this.roleRepository.findOneBy({ id });
+    }
+    findAll() {
+        return this.roleRepository.find();
     }
 }
