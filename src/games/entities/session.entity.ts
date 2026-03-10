@@ -12,6 +12,12 @@ export enum SessionStatus {
     CANCELLED = 'cancelled',
 }
 
+export enum SessionLocation {
+    House = 'house hosted',
+    cafe = 'cafe',
+    studio = 'Studio',
+}
+
 @Entity('sessions')
 export class Session {
     @PrimaryGeneratedColumn()
