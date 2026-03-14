@@ -1,16 +1,22 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { type Response } from 'express';
+
+import { PermissionsGuard } from '@/common/guards/permissions.guard';
+import { Permissions } from '@/common/decorators/permissions.decorator';
 
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
+@UseGuards(AuthGuard('jwt'), PermissionsGuard) // Aquí puedes agregar tus guards de autenticación/autorización si es necesario
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get()
     @HttpCode(200)
+    @Permissions('read')
     findAll(@Query('username') username?: string) {
         return this.userService.findAll(username);
     }

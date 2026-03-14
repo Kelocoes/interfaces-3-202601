@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
 import { RoleService } from '../role/role.service';
@@ -7,6 +9,10 @@ import { RoleService } from '../role/role.service';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+
+jest.mock('bcrypt', () => ({
+    hash: jest.fn(),
+}));
 
 describe('UserService', () => {
     let service: UserService;
@@ -26,6 +32,10 @@ describe('UserService', () => {
         findByName: jest.fn(),
     };
 
+    const mockConfigService = {
+        get: jest.fn(),
+    };
+
     beforeEach(async () => {
         jest.clearAllMocks();
 
@@ -34,6 +44,7 @@ describe('UserService', () => {
                 UserService,
                 { provide: getRepositoryToken(User), useValue: mockRepository },
                 { provide: RoleService, useValue: mockRoleService },
+                { provide: ConfigService, useValue: mockConfigService },
             ],
         }).compile();
 
@@ -89,18 +100,20 @@ describe('UserService', () => {
             roleName: 'ADMIN',
         };
         const role = { id: 10, name: 'ADMIN' };
-        const entityToSave = { ...dto, role };
+        const entityToSave = { ...dto, role, passwordHash: 'hashed-password' };
         const savedUser = { id: 1, ...entityToSave };
 
         mockRoleService.findByName.mockResolvedValue(role);
         mockRepository.create.mockReturnValue(entityToSave);
         mockRepository.save.mockResolvedValue(savedUser);
+        mockConfigService.get.mockReturnValue('10');
+        (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password');
 
         const result = await service.create(dto as CreateUserDto);
 
         expect(result).toEqual(savedUser);
         expect(mockRoleService.findByName).toHaveBeenCalledWith('ADMIN');
-        expect(mockRepository.create).toHaveBeenCalledWith({ ...dto, role });
+        expect(mockRepository.create).toHaveBeenCalledWith({ ...dto, role, passwordHash: 'hashed-password' });
         expect(mockRepository.save).toHaveBeenCalledWith(entityToSave);
     });
 

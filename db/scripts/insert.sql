@@ -20,12 +20,12 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 
 -- Insert Users
 INSERT INTO users (username, email, password_hash, bio, role_id, created_at) VALUES
-('admin_user', 'admin@example.com', '$2b$10$hashedpassword1', 'Administrator account', 1, NOW()),
-('juan_perez', 'juan@example.com', '$2b$10$hashedpassword2', 'Lover of board games', 2, NOW()),
-('maria_garcia', 'maria@example.com', '$2b$10$hashedpassword3', 'Strategic games enthusiast', 2, NOW()),
-('carlos_lopez', 'carlos@example.com', '$2b$10$hashedpassword4', 'Party games fan', 2, NOW()),
-('ana_martinez', 'ana@example.com', '$2b$10$hashedpassword5', 'Competitive player', 2, NOW()),
-('luis_fernandez', 'luis@example.com', '$2b$10$hashedpassword6', 'Game collector', 2, NOW());
+('admin_user', 'admin@example.com', '$2b$10$inl.oviLKU/8nelnHKqiH.WwMt4bDA/EcWwQRY1t2oAgxyDT8tyFS', 'Administrator account', 1, NOW()),
+('juan_perez', 'juan@example.com', '$2b$10$inl.oviLKU/8nelnHKqiH.WwMt4bDA/EcWwQRY1t2oAgxyDT8tyFS', 'Lover of board games', 2, NOW()),
+('maria_garcia', 'maria@example.com', '$2b$10$inl.oviLKU/8nelnHKqiH.WwMt4bDA/EcWwQRY1t2oAgxyDT8tyFS', 'Strategic games enthusiast', 2, NOW()),
+('carlos_lopez', 'carlos@example.com', '$2b$10$inl.oviLKU/8nelnHKqiH.WwMt4bDA/EcWwQRY1t2oAgxyDT8tyFS', 'Party games fan', 2, NOW()),
+('ana_martinez', 'ana@example.com', '$2b$10$inl.oviLKU/8nelnHKqiH.WwMt4bDA/EcWwQRY1t2oAgxyDT8tyFS', 'Competitive player', 2, NOW()),
+('luis_fernandez', 'luis@example.com', '$2b$10$inl.oviLKU/8nelnHKqiH.WwMt4bDA/EcWwQRY1t2oAgxyDT8tyFS', 'Game collector', 2, NOW());
 
 -- Insert Games
 INSERT INTO games (name, description, min_players, max_players, category, created_by) VALUES

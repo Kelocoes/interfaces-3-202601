@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
 import { RoleService } from '../role/role.service';
@@ -14,6 +16,7 @@ export class UserService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         private roleService: RoleService,
+        private readonly configService: ConfigService,
     ) {}
 
     async create(createUserDto: CreateUserDto) {
@@ -22,8 +25,16 @@ export class UserService {
             throw new Error('Role not found');
         }
 
+        if (!createUserDto.passwordHash) {
+            throw new BadRequestException('Password is required');
+        }
+
+        const saltRounds = parseInt(this.configService.get<string>('SALT_ROUNDS') ?? '10');
+        const passwordHash = await bcrypt.hash(createUserDto.passwordHash, saltRounds);
+
         const newUser = this.userRepository.create({
             ...createUserDto,
+            passwordHash,
             role,
         });
         return await this.userRepository.save(newUser);
@@ -36,8 +47,11 @@ export class UserService {
         });
     }
 
-    findById(id: number) {
-        return this.userRepository.findOne({ where: { id } });
+    findById(id: number, relations = false) {
+        return this.userRepository.findOne({
+            where: { id },
+            relations: relations ? ['role', 'role.rolePermissions', 'role.rolePermissions.permission'] : undefined,
+        });
     }
 
     findOneRelations(id: number) {
@@ -117,6 +131,13 @@ export class UserService {
     async countByRole(roleName: string): Promise<number> {
         return await this.userRepository.count({
             where: { role: { name: roleName } },
+        });
+    }
+
+    async findByEmail(email: string): Promise<User | null> {
+        return this.userRepository.findOne({
+            where: { email },
+            relations: ['role', 'role.rolePermissions', 'role.rolePermissions.permission'],
         });
     }
 }
