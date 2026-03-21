@@ -4,13 +4,15 @@ import { type Response } from 'express';
 
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { Permissions } from '@/common/decorators/permissions.decorator';
+import { PositiveIntPipe } from '@/common/pipes/positive-int.pipe';
 
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUserParams } from './dto/get-user-params.dto';
 
 @Controller('users')
-@UseGuards(AuthGuard('jwt'), PermissionsGuard) // Aquí puedes agregar tus guards de autenticación/autorización si es necesario
+@UseGuards(AuthGuard('jwt'), PermissionsGuard)
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -28,13 +30,13 @@ export class UserController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.userService.update(+id, updateUserDto);
+    update(@Param() param: GetUserParams, @Body() updateUserDto: UpdateUserDto) {
+        return this.userService.update(param.id, updateUserDto);
     }
 
     @Delete(':id')
-    async remove(@Param('id') id: string, @Res() res: Response): Promise<Response> {
-        const result = await this.userService.remove(+id);
+    async remove(@Param('id', PositiveIntPipe) id: number, @Res() res: Response): Promise<Response> {
+        const result = await this.userService.remove(id);
         if (result) {
             return res.status(200).json(`User with id ${id} deleted successfully`);
         }

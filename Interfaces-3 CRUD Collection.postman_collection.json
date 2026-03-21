@@ -1,0 +1,807 @@
+{
+  "info": {
+    "_postman_id": "11dd98ba-a481-4d2c-935b-9e6ed6467a45",
+    "name": "Interfaces-3 CRUD Collection",
+    "description": "Coleccion para probar CRUD (4 operaciones) de users, roles y games.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12699219"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}",
+                  "const n = Math.floor(Math.random() * 100000);",
+                  "pm.collectionVariables.set('generatedUsername', `user-${n}`);",
+                  "pm.collectionVariables.set('generatedEmail', `user-${n}@example.com`);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});",
+                  "try {",
+                  "  const data = pm.response.json();",
+                  "  if (data && data.id) pm.collectionVariables.set('userId', String(data.id));",
+                  "} catch (e) {}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"{{generatedUsername}}\",\r\n    \"email\": \"{{generatedEmail}}\",\r\n    \"passwordHash\": \"password\",\r\n    \"bio\": \"Board game enthusiast\",\r\n    \"roleName\": \"admin\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}",
+                  "const u = pm.collectionVariables.get('generatedUsername') || `user-${Math.floor(Math.random() * 100000)}`;",
+                  "const e = pm.collectionVariables.get('generatedEmail') || `${u}@example.com`;",
+                  "pm.collectionVariables.set('updatedUsername', `${u}-updated`);",
+                  "pm.collectionVariables.set('updatedEmail', `${e.split('@')[0]}-updated@example.com`);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"{{updatedUsername}}\",\r\n    \"email\": \"{{updatedEmail}}\",\r\n    \"bio\": \"Updated profile -updated\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Create Role",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});",
+                  "try {",
+                  "  const data = pm.response.json();",
+                  "  if (data && data.id) pm.collectionVariables.set('roleId', String(data.id));",
+                  "} catch (e) {}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"moderator\",\n  \"description\": \"Role for moderation tasks\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Roles",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Role",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"moderator_updated\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles",
+                "{{roleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Role",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles",
+                "{{roleId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Games",
+      "item": [
+        {
+          "name": "Create Game",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}",
+                  "const n = Math.floor(Math.random() * 100000);",
+                  "pm.collectionVariables.set('generatedGameName', `game-${n}`);",
+                  "pm.collectionVariables.set('generatedGameDescription', `game-${n}`);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});",
+                  "try {",
+                  "  const data = pm.response.json();",
+                  "  if (data && data.id) pm.collectionVariables.set('gameId', String(data.id));",
+                  "} catch (e) {}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{generatedGameName}}\",\r\n    \"description\": \"{{generatedGameDescription}}\",\r\n    \"minPlayers\": 3,\r\n    \"maxPlayers\": 4,\r\n    \"category\": \"strategy\",\r\n    \"createdBy\": {{userId}}\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/games",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "games"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Games",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/games",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "games"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Game",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}",
+                  "const g = pm.collectionVariables.get('generatedGameName') || `game-${Math.floor(Math.random() * 100000)}`;",
+                  "const d = pm.collectionVariables.get('generatedGameDescription') || g;",
+                  "pm.collectionVariables.set('updatedGameName', `${g}-updated`);",
+                  "pm.collectionVariables.set('updatedGameDescription', `${d}-updated`);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{updatedGameName}}\",\r\n    \"description\": \"{{updatedGameDescription}}\",\r\n    \"maxPlayers\": 5,\r\n    \"category\": \"board\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "games",
+                "{{gameId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Game",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status < 500', function () {",
+                  "  pm.expect(pm.response.code).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "games",
+                "{{gameId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status < 500', function () {",
+              "  pm.expect(pm.response.code).to.be.below(500);",
+              "});",
+              "try {",
+              "  const data = pm.response.json();",
+              "  const token = data.access_token || data.token || data.jwt;",
+              "  if (token) {",
+              "    pm.collectionVariables.set('authToken', token);",
+              "    pm.environment.set('authToken', token);",
+              "  }",
+              "} catch (e) {}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+              "if (token) {",
+              "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"john@example.com\",\r\n    \"password\": \"password\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const token = pm.collectionVariables.get('authToken') || pm.environment.get('authToken');",
+          "if (token && !/login/i.test(pm.info.requestName || '')) {",
+          "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('status < 500', function () {",
+          "  pm.expect(pm.response.code).to.be.below(500);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    },
+    {
+      "key": "roleId",
+      "value": "1"
+    },
+    {
+      "key": "gameId",
+      "value": "1"
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    },
+    {
+      "key": "generatedUsername",
+      "value": ""
+    },
+    {
+      "key": "generatedEmail",
+      "value": ""
+    },
+    {
+      "key": "updatedUsername",
+      "value": ""
+    },
+    {
+      "key": "updatedEmail",
+      "value": ""
+    },
+    {
+      "key": "generatedGameName",
+      "value": ""
+    },
+    {
+      "key": "generatedGameDescription",
+      "value": ""
+    },
+    {
+      "key": "updatedGameName",
+      "value": ""
+    },
+    {
+      "key": "updatedGameDescription",
+      "value": ""
+    }
+  ]
+}
