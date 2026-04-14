@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import CustomItem from "../components/Item";
 
+import Canvas from "./Canvas";
+
 export default function ReactIntro() {
     let anotherCounter = 0;
     const [counter, setCounter] = useState(0);
@@ -25,6 +27,7 @@ export default function ReactIntro() {
             <CustomItem id={1} name={"Carro"} />
             <CustomItem id={2} name={"Moto"} />
             <CustomItem id={3} name={"Autobús"} />
+            <Canvas />
         </>
     );
 }
