@@ -18,7 +18,8 @@ export default function Login() {
             return
         }
 
-        console.log("Login response:", result.data)
+        console.log("Login response:", result.data.token)
+        localStorage.setItem("token", result.data.token)
     }
 
     return (
