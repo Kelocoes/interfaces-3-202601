@@ -1,10 +1,13 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const items = ["Elemento 1", "Elemento 2", "Elemento 3"];
 
 export default function CsrExamplePage() {
+    console.info("Renderizando componente CSRExamplePage");
+    const router = useRouter();
     const [clicks, setClicks] = useState(0);
 
     return (
@@ -16,6 +19,12 @@ export default function CsrExamplePage() {
                 onClick={() => setClicks((value) => value + 1)}
             >
                 Incrementar
+            </button>
+            <button
+                className="btn btn-outline btn-sm mt-3 block"
+                onClick={() => router.push("/dashboard")}
+            >
+                Volver al dashboard
             </button>
             <ul className="mt-4 list-disc pl-6">
                 {items.map((item) => (
