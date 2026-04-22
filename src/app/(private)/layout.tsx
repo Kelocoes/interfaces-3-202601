@@ -1,13 +1,18 @@
-import AuthProvider from "../providers/AuthProvider"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const token = (await cookies()).get("token")?.value
+
+    if (!token) {
+        redirect("/login?reason=session_expired")
+    }
+
     return (
-        <AuthProvider>
-            {children}
-        </AuthProvider>
+        <>{children}</>
     )
 }

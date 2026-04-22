@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
-import { loginService } from "./services/login.service"
 import { useRouter } from "next/navigation"
+import { loginAction } from "../(private)/dashboard/loginAction"
 
 export default function Login() {
     const formRef = React.useRef<HTMLFormElement>(null)
@@ -9,22 +9,18 @@ export default function Login() {
 
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
+
         const formData = new FormData(formRef.current!)
-        const email = String(formData.get("email") ?? "")
-        const password = String(formData.get("password") ?? "")
+        const result = await loginAction(formData)
 
-        const result = await loginService.login({ email, password })
-
-        if (result.error) {
+        if (result?.error) {
             console.log("Login error:", result.message)
             return
         }
 
-        console.log("Login response:", result.data.access_token)
-        localStorage.setItem("token", result.data.access_token)
-        document.cookie = `token=${encodeURIComponent(result.data.access_token)}; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`
         router.push("/dashboard")
     }
+
 
     return (
         <main>

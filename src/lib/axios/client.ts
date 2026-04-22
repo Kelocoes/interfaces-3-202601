@@ -11,23 +11,14 @@ const onSuccess = (response: AxiosResponse) => {
     return response
 }
 
-const getTokenFromCookie = () => {
-    if (typeof document === "undefined") return null
-
-    const tokenCookie = document.cookie
-        .split("; ")
-        .find((cookie) => cookie.startsWith("token="))
-
-    return tokenCookie ? decodeURIComponent(tokenCookie.split("=")[1] ?? "") : null
-}
-
-const onRequest = (config: InternalAxiosRequestConfig) => {
-    if (typeof window !== "undefined") {
-        const token = window.localStorage.getItem("token") ?? getTokenFromCookie()
+const onRequest = async (config: InternalAxiosRequestConfig) => {
+    if (typeof window === "undefined") {
+        const { cookies } = await import("next/headers")
+        const token = (await cookies()).get("token")?.value
 
         if (token) {
-            config.headers = config.headers ?? {};
-            (config.headers as Record<string, string>).Authorization = `Bearer ${token}`
+            config.headers = config.headers ?? {}
+                ; (config.headers as Record<string, string>).Authorization = `Bearer ${token}`
         }
     }
 
