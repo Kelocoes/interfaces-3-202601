@@ -6,12 +6,12 @@ type LoginPayload = {
 }
 
 type LoginResponse = {
-    token: string
+    access_token: string
 }
 
 class LoginService {
     async login(payload: LoginPayload): Promise<ApiResult<LoginResponse>> {
-        return safeRequest<LoginResponse>(axiosClient.post("/api/auth/login", payload))
+        return safeRequest<LoginResponse>(axiosClient.post("/auth/login", payload))
     }
 }
 

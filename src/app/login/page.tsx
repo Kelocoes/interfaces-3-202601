@@ -1,9 +1,11 @@
 "use client"
 import React from "react"
 import { loginService } from "./services/login.service"
+import { useRouter } from "next/navigation"
 
 export default function Login() {
     const formRef = React.useRef<HTMLFormElement>(null)
+    const router = useRouter()
 
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -18,8 +20,10 @@ export default function Login() {
             return
         }
 
-        console.log("Login response:", result.data.token)
-        localStorage.setItem("token", result.data.token)
+        console.log("Login response:", result.data.access_token)
+        localStorage.setItem("token", result.data.access_token)
+        document.cookie = `token=${encodeURIComponent(result.data.access_token)}; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`
+        router.push("/dashboard")
     }
 
     return (

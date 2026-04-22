@@ -1,4 +1,7 @@
-export default function Dashboard() {
+import { gameService } from "./services/game.service"
+
+export default async function Dashboard() {
+    const games = await gameService.getGames()
     return (
         <main>
             <div className="grid min-h-screen grid-cols-1 bg-white">
@@ -10,6 +13,22 @@ export default function Dashboard() {
                         </p>
                     </div>
                 </div>
+
+                {games.error ? (
+                    <div className="flex items-center justify-center p-4 md:p-8">
+                        <p className="text-red-500">Error loading games: {games.message}</p>
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-center p-4 md:p-8">
+                        <ul className="space-y-2">
+                            {games.data.map((game) => (
+                                <li key={game.id} className="text-gray-800">
+                                    {game.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </main>
     )
