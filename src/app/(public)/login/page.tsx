@@ -2,15 +2,20 @@
 
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { loginService } from "./services/login.service";
 
 export default function Login() {
     const formRef = useRef<HTMLFormElement>(null);
     const router = useRouter();
 
-    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formData = new FormData(formRef.current!)
         console.info(formData.get("email"), formData.get("password"))
+        const result = await loginService.login(
+            String(formData.get("email")),
+            String(formData.get("password"))
+        )
         router.push("/feed")
     }
 
