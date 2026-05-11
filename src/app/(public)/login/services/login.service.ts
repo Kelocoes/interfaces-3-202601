@@ -5,7 +5,7 @@ class LoginService {
         const result = await axiosClient.post("/auth/login", {
             email, password
         })
-        return result;
+        return result.data;
     }
 }
 

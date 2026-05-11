@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
-import { loginService } from "./services/login.service";
+import loginAction from "./login.action";
 
 export default function Login() {
     const formRef = useRef<HTMLFormElement>(null);
@@ -12,7 +12,7 @@ export default function Login() {
         e.preventDefault()
         const formData = new FormData(formRef.current!)
         console.info(formData.get("email"), formData.get("password"))
-        const result = await loginService.login(
+        const result = await loginAction(
             String(formData.get("email")),
             String(formData.get("password"))
         )
