@@ -1,6 +1,7 @@
 import { gameService, type GameResponse } from "./services/game.service"
 import GamesCard from "@/common/components/GamesCard";
 import GameForm from "./components/GameForm";
+import NotificationCreator from "./components/NotificationCreator";
 import { revalidatePath } from "next/cache";
 
 export default async function Feed() {
@@ -33,12 +34,17 @@ export default async function Feed() {
 
                 <section className="card bg-base-100 border border-base-200 shadow-xl">
                     <div className="card-body gap-4">
-                        <div>
-                            <h2 className="card-title text-2xl">Juegos</h2>
-                            <p className="text-sm text-base-content/70">Lista de juegos obtenidos desde la API.</p>
+                        <div className="flex items-center justify-between gap-4">
+                            <div>
+                                <h2 className="card-title text-2xl">Juegos</h2>
+                                <p className="text-sm text-base-content/70">Lista de juegos obtenidos desde la API.</p>
+                            </div>
+                            <div className="w-full max-w-md">
+                                <NotificationCreator />
+                            </div>
                         </div>
 
-                        <div className="grid gap-4">
+                        <div className="grid gap-4 mt-2">
                             {games.data.length > 0 ? (
                                 games.data.map((game: GameResponse) => (
                                     <GamesCard
