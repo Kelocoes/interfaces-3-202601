@@ -16,6 +16,13 @@ export default function Login() {
             String(formData.get("email")),
             String(formData.get("password"))
         )
+
+        if (result.error) {
+            console.error(result.message)
+            return
+        }
+        console.info("Login successful, redirecting to feed...")
+
         router.push("/feed")
     }
 

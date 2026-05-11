@@ -6,6 +6,19 @@ import { revalidatePath } from "next/cache";
 export default async function Feed() {
     const games = await gameService.getGames();
 
+    if (games.error) {
+        console.error(games.message);
+        return (
+            <div className="min-h-screen bg-base-200 px-4 py-8">
+                <div className="mx-auto max-w-7xl">
+                    <div className="alert alert-error">
+                        <span>No fue posible cargar los juegos. Intenta recargar la página.</span>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     async function deleteGame(id: number) {
         "use server";
 
@@ -26,8 +39,8 @@ export default async function Feed() {
                         </div>
 
                         <div className="grid gap-4">
-                            {games.length > 0 ? (
-                                games.map((game: GameResponse) => (
+                            {games.data.length > 0 ? (
+                                games.data.map((game: GameResponse) => (
                                     <GamesCard
                                         key={game.id}
                                         id={game.id}

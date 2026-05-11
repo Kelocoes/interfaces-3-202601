@@ -1,4 +1,4 @@
-import axiosClient from "@/lib/axios/client"
+import axiosClient, { safeRequest } from "@/lib/axios/client"
 
 export type GameResponse = {
     id: number,
@@ -17,17 +17,21 @@ export type CreateGameDto = {
 
 class GameService {
     async getGames() {
-        const result = await axiosClient.get<GameResponse[]>("/games");
-        return result.data
+        const result = await safeRequest<GameResponse[]>(
+            axiosClient.get("/games")
+        );
+        return result;
     }
 
     async createGame(payload: CreateGameDto) {
-        const result = await axiosClient.post<GameResponse>("/games", payload);
-        return result.data;
+        const result = await safeRequest<GameResponse>(
+            axiosClient.post("/games", payload)
+        );
+        return result;
     }
 
     async deleteGame(id: number) {
-        await axiosClient.delete(`/games/${id}`);
+        await safeRequest(axiosClient.delete(`/games/${id}`));
     }
 }
 

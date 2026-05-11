@@ -4,20 +4,22 @@ import { cookies } from "next/headers";
 import { loginService } from "./services/login.service";
 
 export default async function loginAction(email: string, password: string) {
-    try {
-        const result = await loginService.login(email, password);
 
-        const cookiesStore = await cookies()
-        console.log(result)
-        cookiesStore.set("token", result.access_token, {
-            httpOnly: true,
-            path: "/",
-            maxAge: 60 * 60 * 24 * 7, // 1 week
-        })
+    const result = await loginService.login(email, password);
+
+    if (result.error) {
+        console.error(result.message)
         return result;
-    } catch (error) {
-        console.error("Error logging in:", error);
-        throw error;
     }
+
+    const cookiesStore = await cookies()
+    console.log(result)
+    cookiesStore.set("token", result.data.access_token, {
+        httpOnly: true,
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7, // 1 week
+    })
+
+    return result;
 
 }
