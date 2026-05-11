@@ -1,5 +1,3 @@
-import CustomBadge from "../common/components/CustomBadge";
-
 export default function HomePage() {
     return (
         <div className="hero bg-base-200 min-h-screen">
@@ -9,7 +7,6 @@ export default function HomePage() {
                     <p className="py-6">
                         Welcome to our application! Please choose an option below.
                     </p>
-                    <CustomBadge badgeContent={4} color="primary" />
                 </div>
             </div>
         </div>
