@@ -6,8 +6,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
-    app.enableCors();
-    await app.listen(process.env.PORT ?? 3000);
+    app.enableCors({
+        origin: '*',
+        credentials: true,
+    });
+    await app.listen(process.env.PORT ?? 3000, "0.0.0.0");
 }
 bootstrap().catch((error) => {
     console.error('Error starting the application:', error);
